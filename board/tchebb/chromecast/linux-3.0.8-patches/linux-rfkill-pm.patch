@@ -1,0 +1,25 @@
+diff --git a/include/linux/rfkill.h b/include/linux/rfkill.h
+index c6c6084..8869d23 100644
+--- a/include/linux/rfkill.h
++++ b/include/linux/rfkill.h
+@@ -192,6 +192,7 @@ int __must_check rfkill_register(struct rfkill *rfkill);
+  */
+ void rfkill_pause_polling(struct rfkill *rfkill);
+ 
++#ifdef CONFIG_RFKILL_PM
+ /**
+  * rfkill_resume_polling(struct rfkill *rfkill)
+  *
+@@ -200,7 +201,11 @@ void rfkill_pause_polling(struct rfkill *rfkill);
+  * core stops polling anyway
+  */
+ void rfkill_resume_polling(struct rfkill *rfkill);
+-
++#else
++static inline void rfkill_resume_polling(struct rfkill *rfkill)
++{
++}
++#endif
+ 
+ /**
+  * rfkill_unregister - Unregister a rfkill structure.

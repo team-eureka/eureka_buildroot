@@ -1,0 +1,20 @@
+#!/bin/sh
+# Load modules specified in /etc/modules-load.d/
+
+case "$1" in
+	start)
+		echo 'Loading kernel modules...'
+		cat /etc/modules-load.d/*.conf | while read MODULE ; do
+			test "$MODULE" != '' && modprobe "$MODULE"
+		done
+		;;
+	stop)
+		;;
+	restart|reload)
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?
