@@ -1,0 +1,68 @@
+#!/bin/sh
+#
+# Establish a network connection (client or AP mode).
+#
+
+CLIENT_INTERFACE='mlan0'
+AP_INTERFACE='uap0'
+AP_IP='192.168.255.249'
+
+case "$1" in
+  start)
+ 	echo "Attempting to establish network connection..."
+
+	echo "Searching for WiFi configuration..."
+	DATA="$(mktemp -d)"
+	if mount /dev/mtdblock5 "$DATA" ; then
+		if test -f "${DATA}/wifi/wpa_supplicant.conf" ; then
+			WPA_CONF="$(mktemp -u)"
+			tail -n '+4' "${DATA}/wifi/wpa_supplicant.conf" >"$WPA_CONF"
+		fi
+		umount "$DATA"
+	fi
+	rmdir "$DATA"
+
+	if test -s "$WPA_CONF" ; then
+		echo "WiFi configuration found, connecting..."
+		if \
+			wpa_supplicant -B -D 'nl80211' -i "$CLIENT_INTERFACE" -c "$WPA_CONF" &&
+			udhcpc -i "$CLIENT_INTERFACE" -n -x "hostname:$(cat /etc/hostname)"
+		then
+			echo "Connected as client!"
+			CONNECTION_MODE='client'
+		else
+			echo "Connecting as client failed"
+		fi
+	fi
+	rm -f "$WPA_CONF"
+
+	if test -z "$CONNECTION_MODE" ; then
+		echo "Using AP mode..."
+		if \
+			hostapd -B /etc/hostapd.conf &&
+			ip address add dev "$AP_INTERFACE" "${AP_IP}/29" &&
+			sed -i 's/127\.0\.1\.1/'"${AP_IP}/" /etc/hosts
+			dnsmasq
+		then
+			echo "AP creation successful!"
+			CONNECTION_MODE='ap'
+		else
+			echo "Failed to create AP"
+		fi
+	fi
+
+	if test -z "$CONNECTION_MODE" ; then
+		exit 1
+	fi
+	;;
+  stop)
+	echo -n "Disconnecting is impossible!"
+	exit 1
+	;;
+  *)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit $?
+

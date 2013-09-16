@@ -1,0 +1,104 @@
+#!/bin/sh
+set -o pipefail
+
+IMAGES_DEVICE='/dev/sda1'
+LOG_FILES='/root/flashcast.log'
+
+log_cmd() {
+	"$@" 2>&1 | tee -a $LOG_FILES
+}
+
+log() {
+	log_cmd echo "$1"
+}
+
+fatal() {
+	set-led red
+	log "SETUP FAILED: ${1}" | tee /etc/motd
+	exit 1
+}
+
+select_log_file() {
+	I=1
+	while test -f "$1/flashcast-${I}.log" ; do
+		I="$((I+1))"
+	done
+	echo "$1/flashcast-${I}.log"
+}
+
+# Check hardware version.
+if ! grep -qe '\sandroidboot\.hardware=eureka-b3\s' /proc/cmdline ; then
+	fatal "Unsupported hardware! This script is designed for the original Chromecast."
+fi
+
+# Clear any downloaded OTAs
+log "Clearing OTAs"
+log_cmd flash-image '/usr/share/flasher/remove-ota'
+
+# Mount the device to a temporary directory.
+IMAGES_DIR="$(mktemp -d)"
+log "Mounting ${IMAGES_DEVICE} to ${IMAGES_DIR}"
+if ! mount "$IMAGES_DEVICE" "$IMAGES_DIR" ; then
+	if test -b "$IMAGES_DEVICE" ; then
+		fatal "${IMAGES_DEVICE} does not contain a recognized filesystem"
+	else
+		fatal "${IMAGES_DEVICE} is not a block device"
+	fi
+fi
+
+unmount_images() {
+	log "Unmounting and removing ${IMAGES_DIR}"
+	umount "$IMAGES_DIR"
+	rmdir "$IMAGES_DIR"
+}
+trap unmount_images EXIT
+
+# Set up logging to the device.
+EXTERNAL_LOG="$(select_log_file "${IMAGES_DIR}")"
+cp '/root/flash.log' "${EXTERNAL_LOG}"
+LOG_FILES="$LOG_FILES $EXTERNAL_LOG"
+log "Opened log file ${EXTERNAL_LOG}"
+
+# Check for images.
+if test -f "${IMAGES_DIR}/eureka_image.zip" ; then
+	log "Found eureka_image.zip, using"
+	IMAGE_DIR="$(mktemp -d)"
+	log_cmd unzip -d "$IMAGE_DIR" "${IMAGES_DIR}/eureka_image.zip"
+elif test -d "${IMAGES_DIR}/eureka_image" ; then
+	log "Found eureka_image directory, using"
+	IMAGE_DIR="$(mktemp -u)"
+	cp -r "${IMAGES_DIR}/eureka_image" "$IMAGE_DIR"
+	chmod 755 "$IMAGE_DIR"
+elif test -f "${IMAGES_DIR}/Chromecast-Rooted-System-GTVHacker-cj_000-July27-635PM.bin" ; then
+	# For backwards compatibility
+	log "Found legacy GTVHacker system image, using"
+	IMAGE_DIR="$(mktemp -u)"
+	cp -r '/usr/share/flasher/gtvhacker-compat/' "$IMAGE_DIR"
+	cp "${IMAGES_DIR}/Chromecast-Rooted-System-GTVHacker-cj_000-July27-635PM.bin" "${IMAGE_DIR}/system.img"
+	chmod 644 "${IMAGE_DIR}/system.img"
+else
+	fatal "No images found on ${IMAGES_DEVICE}"
+fi
+
+# Check if this is a dry run.
+if test -f "${IMAGES_DIR}/dry_run" ; then
+	log "dry_run file is present, not performing destructive commands"
+	export DRY_RUN=1
+fi
+
+# Flash the image.
+log "Handing off control to imager.sh"
+log_cmd flash-image "$IMAGE_DIR"
+# Reboot the system once we're done flashing, unless the image prevents it or the script failed.
+if test "$?" -eq 0 ; then
+	log "Flashing succeeded"
+	if ! test -f "${IMAGES_DIR}/no_reboot" ; then
+		log "Rebooting"
+		reboot
+	else
+		log "no_reboot file is present, not rebooting"
+	fi
+else
+	log "Flashing failed"
+	set-led red
+fi

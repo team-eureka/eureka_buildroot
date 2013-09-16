@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Flash an image from external media, if present.
+#
+
+case "$1" in
+  start)
+ 	echo "Starting flasher..."
+
+	/usr/sbin/flasher >/dev/null 2>&1 &
+	;;
+  stop)
+	exit 0
+	;;
+  *)
+	echo "Usage: $0 {start|stop}"
+	exit 1
+esac
+
+exit $?
+

@@ -1,0 +1,123 @@
+#!/bin/sh
+
+# log
+# Write a status message to the log.
+#
+# Parameters:
+#   $1: The message to write.
+log() {
+	echo "$1" >&3
+}
+
+# dry_run
+# Write a debug message to the log. Use instead of a destructive operation when
+# DRY_RUN is set.
+#
+# Parameters:
+#   $1: The message to write.
+dry_run() {
+	if test -n "$DRY_RUN" ; then
+		echo "DRY_RUN: ${1}" >&3
+	fi
+}
+
+# fatal
+# Exits the script after writing an error message to the log.
+#
+# Parameters:
+#   $1: A string describing the error encountered.
+fatal() {
+	echo "IMAGER.SH FAILED: ${1}" | tee /etc/motd >&3
+	exit 1;
+}
+
+# mtd_lookup
+# Converts an MTD partition name into a device name of the form "mtdX".
+#
+# Parameters:
+#   $1: The name of the MTD partition.
+# Returns: Prints the device name.
+mtd_lookup() {
+	tail -n '+1' '/proc/mtd' | grep -e '"'"$1"'"$' | cut -d ':' -f 1
+}
+
+# flash_mtd_partition
+# Writes an image to an MTD partition.
+#
+# Parameters:
+#   $1: The name (NOT number) of the MTD partition to flash.
+#   $2: The path to an image file to flash.
+# Returns: 0 on success, 1 on failure.
+flash_mtd_partition() {
+	_PARTITION="$(mtd_lookup "$1")"
+	if test -z $_PARTITION ; then
+		return 1;
+	fi
+	log "Flashing ${2} to ${1} (${_PARTITION})"
+	dry_run "Skipping flash on dry run"
+	if test -z "$DRY_RUN" ; then
+		flash_erase "/dev/${_PARTITION}" 0 0 &&
+		nandwrite -p "/dev/${_PARTITION}" "$2"
+	fi
+}
+
+# mount_mtd_partition
+# Mounts an MTD partition to a temporary directory.
+#
+# Parameters:
+#   $1: The name (NOT number) of the MTD partition to mount.
+# Returns: Prints the path to a mounted temporary directory.
+mount_mtd_partition() {
+	_PARTITION="$(mtd_lookup "$1")"
+	if test -z $_PARTITION ; then
+		return 1;
+	fi
+	_MOUNT_DIR="$(mktemp -d)"
+	log "Mounting ${1} (${_PARTITION}) at ${_MOUNT_DIR}"
+	mount "/dev/mtdblock${_PARTITION#mtd}" "$_MOUNT_DIR"
+	echo "$_MOUNT_DIR"
+}
+
+# cleanup_mount
+# Unmounts and cleans up a directory mounted using a mount_* helper.
+#
+# Parameters:
+#   $1: The path of the mount to clean up.
+cleanup_mount() {
+	log "Unmounting ${1}"
+	umount "$1"
+	rmdir "$1"
+}
+
+# clear_data
+# Empties all stock files from the data partition.
+_SKIP='. .. lost+found flashcast'
+clear_data() {
+	_DATA="$(mount_mtd_partition userdata)"
+	log "Clearing userdata partition (${_DATA})"
+	ls -a "$_DATA" | while read _PATH ; do
+		for _I in $_SKIP ; do
+			if test "$_PATH" = "$_I" ; then
+				continue 2
+			fi
+		done
+
+		dry_run "Would remove ${_DATA}/${_PATH}"
+		if test -z "$DRY_RUN" ; then
+			rm -rf "${_DATA}/${_PATH}"
+		fi
+	done
+	cleanup_mount "$_DATA"
+}
+
+# Check for and run the imager script.
+echo "Changing directory to ${1}"
+trap "cd '$PWD'" EXIT 
+cd "$1"
+
+if ! test -x './imager.sh' ; then
+	echo "ERROR: $(pwd)/imager.sh does not exist or is not executable"
+	exit 1
+fi
+
+source './imager.sh' 3>&1
