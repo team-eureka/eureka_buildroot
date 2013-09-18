@@ -59,6 +59,7 @@ flash_mtd_partition() {
 	if test "$?" -ne 0 ; then
 		return 1;
 	fi
+
 	log "Flashing ${2} to ${1} (${_PARTITION})"
 	dry_run "Skipping flash on dry run"
 	if test -z "$DRY_RUN" ; then
@@ -78,6 +79,7 @@ mount_mtd_partition() {
 	if test "$?" -ne 0 ; then
 		return 1;
 	fi
+
 	_MOUNT_DIR="$(mktemp -d)"
 	log "Mounting ${1} (${_PARTITION}) at ${_MOUNT_DIR}"
 	mount "/dev/mtdblock${_PARTITION#mtd}" "$_MOUNT_DIR"
