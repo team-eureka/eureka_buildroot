@@ -121,6 +121,61 @@ clear_data() {
 	cleanup_mount "$_DATA"
 }
 
+# begin_squashfs_edit
+# Mounts a read-only squashfs partition in such a way that it can be modified
+# and the changes stored in RAM. Be sure to call end_squashfs_edit when you're
+# done to flash the edited filesystem back. NOTE: Due to limitations in the
+# provided kernel source, this function can currently only be used with the
+# "rootfs" MTD partition.
+#
+# Parameters:
+#   $1: The name (NOT number) of the MTD partition to mount.
+# Returns: Prints the path to the editable mount.
+begin_squashfs_edit() {
+	if test "$1" != 'rootfs' ; then
+		log "begin_squashfs_edit can only be used with the rootfs MTD partition"
+		return 1;
+	fi
+
+	_WRAPPER="$(mktemp -d)"
+	log "Setting up squashfs union at ${_WRAPPER}"
+	mkdir "${_WRAPPER}/base" "${_WRAPPER}/overlay" "${_WRAPPER}/union"
+
+	_PARTITION="$(mtd_lookup "$1")"
+	if test "$?" -ne 0 ; then
+		return 1;
+	fi
+	if ! mount -t squashfs "/dev/mtdblock${_PARTITION#mtd}" "${_WRAPPER}/base" ; then
+		log "Could not mount MTD partition ${1}"
+		return 1;
+	fi
+
+	unionfs -o cow "${_WRAPPER}/overlay=RW:${_WRAPPER}/base=RO" "${_WRAPPER}/union"
+
+	echo "$1" > "${_WRAPPER}/mtdpart"
+	echo "${_WRAPPER}/union"
+}
+
+# end_squashfs_edit
+# Reflashes a squashfs from a previously-edited partition and cleans up the
+# mount points.
+#
+# Parameters:
+#   $1: The directory returned by begin_squashfs_edit.
+end_squashfs_edit() {
+	_WRAPPER="${1%/union}"
+	log "Reflashing squashfs union at ${_WRAPPER}"
+
+	_REPACKED_FS="${_WRAPPER}/repack.sqfs"
+	mksquashfs -no-progress "${_WRAPPER}/union" "$_REPACKED_FS"
+	flash_mtd_partition "$(cat "${_WRAPPER}/mtdpart")" "${_WRAPPER}/repack.sqfs"
+
+	fusermount -u "${_WRAPPER}/union"
+	umount "${_WRAPPER}/base"
+
+	rm -rf "${_WRAPPER}"
+}
+
 # Check for and run the imager script.
 echo "Changing directory to ${1}"
 trap "cd '$PWD'" EXIT 
