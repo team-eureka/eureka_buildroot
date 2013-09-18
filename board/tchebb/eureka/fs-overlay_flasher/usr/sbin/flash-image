@@ -82,7 +82,10 @@ mount_mtd_partition() {
 
 	_MOUNT_DIR="$(mktemp -d)"
 	log "Mounting ${1} (${_PARTITION}) at ${_MOUNT_DIR}"
-	mount "/dev/mtdblock${_PARTITION#mtd}" "$_MOUNT_DIR"
+	if ! mount "/dev/mtdblock${_PARTITION#mtd}" "$_MOUNT_DIR" ; then
+		log "Could not mount MTD partition ${1}"
+		return 1;
+	fi
 	echo "$_MOUNT_DIR"
 }
 
