@@ -63,8 +63,8 @@ flash_mtd_partition() {
 	log "Flashing ${2} to ${1} (${_PARTITION})"
 	dry_run "Skipping flash on dry run"
 	if test -z "$DRY_RUN" ; then
-		flash_erase "/dev/${_PARTITION}" 0 0 &&
-		nandwrite -p "/dev/${_PARTITION}" "$2"
+		flash_erase -q "/dev/${_PARTITION}" 0 0 &&
+		nandwrite -qp "/dev/${_PARTITION}" "$2"
 	fi
 }
 
