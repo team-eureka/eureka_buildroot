@@ -38,7 +38,13 @@ fatal() {
 #   $1: The name of the MTD partition.
 # Returns: Prints the device name.
 mtd_lookup() {
-	tail -n '+1' '/proc/mtd' | grep -e '"'"$1"'"$' | cut -d ':' -f 1
+	_LOOKUP_RESULT="$(tail -n '+1' '/proc/mtd' | grep -e '"'"$1"'"$' | cut -d ':' -f 1)"
+	if test -z "$_LOOKUP_RESULT" ; then
+		log "Failed to look up MTD partition ${1}"
+		return 1
+	else
+		echo "$_LOOKUP_RESULT"
+	fi
 }
 
 # flash_mtd_partition
@@ -50,7 +56,7 @@ mtd_lookup() {
 # Returns: 0 on success, 1 on failure.
 flash_mtd_partition() {
 	_PARTITION="$(mtd_lookup "$1")"
-	if test -z $_PARTITION ; then
+	if test "$?" -ne 0 ; then
 		return 1;
 	fi
 	log "Flashing ${2} to ${1} (${_PARTITION})"
@@ -69,7 +75,7 @@ flash_mtd_partition() {
 # Returns: Prints the path to a mounted temporary directory.
 mount_mtd_partition() {
 	_PARTITION="$(mtd_lookup "$1")"
-	if test -z $_PARTITION ; then
+	if test "$?" -ne 0 ; then
 		return 1;
 	fi
 	_MOUNT_DIR="$(mktemp -d)"
