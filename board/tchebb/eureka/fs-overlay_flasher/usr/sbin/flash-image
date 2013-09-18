@@ -102,12 +102,12 @@ cleanup_mount() {
 
 # clear_data
 # Empties all stock files from the data partition.
-_SKIP='. .. lost+found flashcast'
+_CLEAR_DATA_SKIP='. .. lost+found flashcast'
 clear_data() {
 	_DATA="$(mount_mtd_partition userdata)"
 	log "Clearing userdata partition (${_DATA})"
 	ls -a "$_DATA" | while read _PATH ; do
-		for _I in $_SKIP ; do
+		for _I in $_CLEAR_DATA_SKIP ; do
 			if test "$_PATH" = "$_I" ; then
 				continue 2
 			fi
