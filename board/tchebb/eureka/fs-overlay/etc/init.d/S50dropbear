@@ -7,7 +7,7 @@
 [ -f /usr/bin/dropbearkey ] || exit 0
 
 start() {
- 	echo -n "Starting dropbear sshd: "
+	echo -n "Starting dropbear sshd: "
 
 	# Mount userdata so we have persistent keys
 	DATA="$(mktemp -d)"
@@ -49,13 +49,13 @@ restart() {
 
 case "$1" in
   start)
-  	start
+	start
 	;;
   stop)
-  	stop
+	stop
 	;;
   restart|reload)
-  	restart
+	restart
 	;;
   *)
 	echo "Usage: $0 {start|stop|restart}"

@@ -9,7 +9,7 @@ AP_IP='192.168.255.249'
 
 case "$1" in
   start)
- 	echo "Attempting to establish network connection..."
+	echo "Attempting to establish network connection..."
 
 	echo "Searching for WiFi configuration..."
 	DATA="$(mktemp -d)"
