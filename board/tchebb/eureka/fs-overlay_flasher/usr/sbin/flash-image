@@ -167,7 +167,7 @@ end_squashfs_edit() {
 	log "Reflashing squashfs union at ${_WRAPPER}"
 
 	_REPACKED_FS="${_WRAPPER}/repack.sqfs"
-	mksquashfs -no-progress "${_WRAPPER}/union" "$_REPACKED_FS"
+	mksquashfs "${_WRAPPER}/union" "$_REPACKED_FS" -no-progress
 	flash_mtd_partition "$(cat "${_WRAPPER}/mtdpart")" "${_WRAPPER}/repack.sqfs"
 
 	fusermount -u "${_WRAPPER}/union"
