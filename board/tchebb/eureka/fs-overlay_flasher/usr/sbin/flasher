@@ -54,10 +54,14 @@ unmount_images() {
 trap unmount_images EXIT
 
 # Set up logging to the device.
-EXTERNAL_LOG="$(select_log_file "${IMAGES_DIR}")"
-cp '/root/flash.log' "${EXTERNAL_LOG}"
-LOG_FILES="$LOG_FILES $EXTERNAL_LOG"
-log "Opened log file ${EXTERNAL_LOG}"
+if test -w "$IMAGES_DIR" ; then
+	EXTERNAL_LOG="$(select_log_file "$IMAGES_DIR")"
+	cp '/root/flashcast.log' "$EXTERNAL_LOG"
+	LOG_FILES="$LOG_FILES $EXTERNAL_LOG"
+	log "Opened log file ${EXTERNAL_LOG}"
+else
+	log "${IMAGES_DIR} is not writable, not logging"
+fi
 
 # Check for images.
 if test -f "${IMAGES_DIR}/eureka_image.zip" ; then
