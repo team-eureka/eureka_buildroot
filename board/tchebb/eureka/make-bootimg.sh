@@ -9,7 +9,7 @@ fi
 IMAGES_DIR="$1"
 
 if test -f "${IMAGES_DIR}/rootfs.cpio.gz" ; then
-	cc-make-bootimg "${IMAGES_DIR}/eureka_boot.img" "${IMAGES_DIR}/zImage" "${IMAGES_DIR}/rootfs.cpio.gz"
+	cc-make-bootimg usb "${IMAGES_DIR}/eureka_boot.img" "${IMAGES_DIR}/zImage" "${IMAGES_DIR}/rootfs.cpio.gz"
 else
-	cc-make-bootimg "${IMAGES_DIR}/eureka_boot.img" "${IMAGES_DIR}/zImage"
+	cc-make-bootimg usb "${IMAGES_DIR}/eureka_boot.img" "${IMAGES_DIR}/zImage"
 fi

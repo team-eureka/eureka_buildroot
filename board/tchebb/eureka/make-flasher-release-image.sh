@@ -30,7 +30,7 @@ rm -f eureka_release.bin
 
 fallocate -l "$((SQFS_START / 1024))KiB" eureka_release.bin
 cat init_partitions.sqfs >> eureka_release.bin
-dd if='eureka_boot.img' of='eureka_release.bin' conv=notrunc
+dd bs="$((0x1000))" conv=notrunc if='eureka_boot.img' of='eureka_release.bin' seek=1
 
 sfdisk -Lf eureka_release.bin <<EOF
 # partition table of eureka_release.bin
