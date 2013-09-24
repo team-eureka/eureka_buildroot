@@ -17,10 +17,6 @@ touch init_partitions
 mksquashfs init_partitions init_partitions.sqfs -all-root -no-progress
 rm init_partitions
 
-sectors() {
-	echo "$((($1 + 511) / 512))"
-}
-
 MBR_SIZE="$((0x1000))"
 BOOTIMG_SIZE="$((1024*1024 * 20))"
 SQFS_SIZE="$(stat -c '%s' init_partitions.sqfs)"
@@ -39,6 +35,11 @@ echo "Copying boot image to release image"
 dd bs="$((0x1000))" conv=notrunc if='eureka_boot.img' of='eureka_release.bin' seek=1
 
 echo "Writing partition table to release image"
+
+sectors() {
+	echo "$((($1 + 511) / 512))"
+}
+
 sfdisk -Lqf eureka_release.bin 2>/dev/null <<EOF
 # partition table of eureka_release.bin
 unit: sectors
