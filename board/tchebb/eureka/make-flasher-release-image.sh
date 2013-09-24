@@ -41,5 +41,3 @@ eureka_release.bin2 : start=  $(sectors "$MBR_SIZE"), size=$(sectors "$BOOTIMG_S
 eureka_release.bin3 : start=                       0, size=                         0, Id= 0
 eureka_release.bin4 : start=                       0, size=                         0, Id= 0
 EOF
-
-zip eureka_release.zip eureka_release.bin
