@@ -12,8 +12,9 @@ cd "$1"
 rm -f init_partitions.sqfs
 
 # Create a new squashfs image with an init_partitions flag file.
+echo "Creating a squashfs image with the init_partitions flag file"
 touch init_partitions
-mksquashfs init_partitions init_partitions.sqfs -all-root
+mksquashfs init_partitions init_partitions.sqfs -all-root -no-progress
 rm init_partitions
 
 sectors() {
@@ -28,11 +29,17 @@ SQFS_START="$((MBR_SIZE + BOOTIMG_SIZE))"
 # Put it all together.
 rm -f eureka_release.bin
 
+echo "Allocating space for release image"
 fallocate -l "$((SQFS_START / 1024))KiB" eureka_release.bin
+
+echo "Appending squashfs image to release image"
 cat init_partitions.sqfs >> eureka_release.bin
+
+echo "Copying boot image to release image"
 dd bs="$((0x1000))" conv=notrunc if='eureka_boot.img' of='eureka_release.bin' seek=1
 
-sfdisk -Lf eureka_release.bin <<EOF
+echo "Writing partition table to release image"
+sfdisk -Lqf eureka_release.bin 2>/dev/null <<EOF
 # partition table of eureka_release.bin
 unit: sectors
 
