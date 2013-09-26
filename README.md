@@ -2,7 +2,7 @@ This repository contains a buildroot board definition, set of defconfigs, and
 various packages which together enable images to be built for the Google
 Chromecast dongle, codenamed "eureka." It is intended to be overlaid over a
 vanilla buildroot installation (has been tested with buildroot 2013.08, but
-may also work with other versions.
+may also work with other versions).
 
 Configurations
 --------------
