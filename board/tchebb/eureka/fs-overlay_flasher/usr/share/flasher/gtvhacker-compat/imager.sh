@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if ! test -f './system.img' ; then
-	fatal "Missing system.img"
+if ! test "$#" -ge 1 -a -f "$1" ; then
+	fatal "Invalid argument"
 fi
 
-flash_mtd_partition rootfs './system.img'
+flash_mtd_partition rootfs "$1"
 clear_data

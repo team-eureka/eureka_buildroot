@@ -46,6 +46,12 @@ if ! mount "$IMAGES_DEVICE" "$IMAGES_DIR" ; then
 	fi
 fi
 
+# Check if this is a dry run.
+if test -f "${IMAGES_DIR}/dry_run" ; then
+	log "dry_run file is present, not performing destructive commands"
+	export DRY_RUN=1
+fi
+
 unmount_images() {
 	log "Unmounting and removing ${IMAGES_DIR}"
 	umount "$IMAGES_DIR"
@@ -55,7 +61,7 @@ unmount_images() {
 if test -f "${IMAGES_DIR}/init_partitions" ; then
 	unmount_images
 	log "init_partitions file is present, setting up partitions"
-	IMAGE_DIR='/usr/share/flasher/init-partitions'
+	log_cmd flash-image '/usr/share/flasher/init-partitions'
 else
 	trap unmount_images EXIT
 
@@ -72,34 +78,26 @@ else
 	# Check for images.
 	if test -f "${IMAGES_DIR}/eureka_image.zip" ; then
 		log "Found eureka_image.zip, using"
-		IMAGE_DIR="$(mktemp -d)"
-		log_cmd unzip -d "$IMAGE_DIR" "${IMAGES_DIR}/eureka_image.zip"
+		log_cmd flash-image "${IMAGES_DIR}/eureka_image.zip"
 	elif test -d "${IMAGES_DIR}/eureka_image" ; then
 		log "Found eureka_image directory, using"
-		IMAGE_DIR="$(mktemp -u)"
-		cp -r "${IMAGES_DIR}/eureka_image" "$IMAGE_DIR"
-		chmod 755 "$IMAGE_DIR"
+		log_cmd flash-image "${IMAGES_DIR}/eureka_image"
 	elif test -f "${IMAGES_DIR}/Chromecast-Rooted-System-GTVHacker-cj_000-July27-635PM.bin" ; then
 		# For backwards compatibility
 		log "Found legacy GTVHacker system image, using"
-		IMAGE_DIR="$(mktemp -u)"
-		cp -r '/usr/share/flasher/gtvhacker-compat/' "$IMAGE_DIR"
-		cp "${IMAGES_DIR}/Chromecast-Rooted-System-GTVHacker-cj_000-July27-635PM.bin" "${IMAGE_DIR}/system.img"
-		chmod 644 "${IMAGE_DIR}/system.img"
+		log_cmd flash-image '/usr/share/flasher/gtvhacker-compat' "${IMAGES_DIR}/Chromecast-Rooted-System-GTVHacker-cj_000-July27-635PM.bin"
+	elif test -d "${IMAGES_DIR}/eureka_images" ; then
+		log "Found eureka_images directory, flashing all images inside"
+		if test -f "${IMAGES_DIR}/ignore_errors" ; then
+			log "ignore_errors file is present, ignoring errors"
+			export IGNORE_ERRORS=1
+		fi
+		log_cmd flash-image '/usr/share/flasher/iterate-images' "${IMAGES_DIR}/eureka_images"
 	else
 		fatal "No images found on ${IMAGES_DEVICE}"
 	fi
 fi
 
-# Check if this is a dry run.
-if test -f "${IMAGES_DIR}/dry_run" ; then
-	log "dry_run file is present, not performing destructive commands"
-	export DRY_RUN=1
-fi
-
-# Flash the image.
-log "Handing off control to imager.sh"
-log_cmd flash-image "$IMAGE_DIR"
 # Reboot the system once we're done flashing, unless the image prevents it or the script failed.
 if test "$?" -eq 0 ; then
 	log "Flashing succeeded"

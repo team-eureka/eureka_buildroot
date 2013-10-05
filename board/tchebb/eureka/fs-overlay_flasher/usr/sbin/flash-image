@@ -27,7 +27,7 @@ dry_run() {
 # Parameters:
 #   $1: A string describing the error encountered.
 fatal() {
-	echo "IMAGER.SH FAILED: ${1}" | tee /etc/motd >&3
+	echo "FAILURE in ${IMAGE_PATH}/imager.sh: ${1}" | tee -a /etc/motd >&3
 	exit 1;
 }
 
@@ -176,14 +176,37 @@ end_squashfs_edit() {
 	rm -rf "${_WRAPPER}"
 }
 
+# Put the mod in a temp directory.
+if test -f "$1" -a "${1%.zip}" != "$1" ; then
+	IMAGE_PATH="$(mktemp -d)"
+	echo "Extracting ${1} (zip) to ${IMAGE_PATH}"
+
+	unzip -d "$IMAGE_PATH" "$1"
+elif test -f "$1" -a "${1%.tar*}" != "$1" ; then
+	IMAGE_PATH="$(mktemp -d)"
+	echo "Extracting ${1} (tar) to ${IMAGE_PATH}"
+
+	tar -xv -C "$IMAGE_PATH" -f "$1"
+elif test -d "$1" ; then
+	IMAGE_PATH="$(mktemp -u)"
+	echo "Copying ${1} to ${IMAGE_PATH}"
+
+	cp -r "$1" "$IMAGE_PATH"
+	chmod 755 "$IMAGE_PATH"
+else
+	echo "${1} is not of a recognized mod format"
+	exit 0
+fi
+
 # Check for and run the imager script.
-echo "Changing directory to ${1}"
+echo "Flashing mod at ${IMAGE_PATH}"
 trap "cd '$PWD'" EXIT 
-cd "$1"
+cd "$IMAGE_PATH"
 
 if ! test -x './imager.sh' ; then
 	echo "ERROR: $(pwd)/imager.sh does not exist or is not executable"
 	exit 1
 fi
 
-source './imager.sh' 3>&1
+shift
+source './imager.sh' "$@" 3>&1
