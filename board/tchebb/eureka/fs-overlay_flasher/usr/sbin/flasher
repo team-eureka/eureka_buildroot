@@ -98,7 +98,7 @@ else
 	fi
 fi
 
-# Reboot the system once we're done flashing, unless the image prevents it or the script failed.
+# Reboot the system once we're done flashing, unless the user has prevented it or the script failed.
 if test "$?" -eq 0 ; then
 	log "Flashing succeeded"
 	if ! test -f "${IMAGES_DIR}/no_reboot" ; then
