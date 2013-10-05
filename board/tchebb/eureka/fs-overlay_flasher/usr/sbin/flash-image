@@ -203,8 +203,8 @@ echo "Flashing mod at ${IMAGE_PATH}"
 trap "cd '$PWD'" EXIT 
 cd "$IMAGE_PATH"
 
-if ! test -x './imager.sh' ; then
-	echo "ERROR: $(pwd)/imager.sh does not exist or is not executable"
+if ! test -f './imager.sh' ; then
+	echo "ERROR: $(pwd)/imager.sh does not exist"
 	exit 1
 fi
 
