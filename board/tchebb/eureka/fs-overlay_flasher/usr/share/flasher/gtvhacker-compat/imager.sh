@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 if ! test "$#" -ge 1 -a -f "$1" ; then
 	fatal "Invalid argument"
