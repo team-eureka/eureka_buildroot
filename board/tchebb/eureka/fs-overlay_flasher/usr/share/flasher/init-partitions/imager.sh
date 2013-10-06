@@ -1,4 +1,3 @@
-#!/bin/sh
 set -e
 
 # I know this is horribly ugly. Believe me, it's the only way.

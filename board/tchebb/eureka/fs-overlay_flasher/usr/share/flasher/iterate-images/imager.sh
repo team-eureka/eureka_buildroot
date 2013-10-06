@@ -1,5 +1,3 @@
-#!/bin/sh
-
 if ! test "$#" -ge 1 -a -d "$1" ; then
 	fatal "Invalid argument"
 fi

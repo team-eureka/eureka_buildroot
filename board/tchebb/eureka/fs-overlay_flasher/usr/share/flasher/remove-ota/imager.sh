@@ -1,4 +1,3 @@
-#!/bin/sh
 set -e
 
 CACHE="$(mount_mtd_partition cache)"
