@@ -198,9 +198,17 @@ else
 	exit 0
 fi
 
+# Make sure to clean up when we're done.
+_ORIG_PWD="$(pwd)"
+_clean_up() {
+	echo "Removing temporary mod directory ${_IMAGE_PATH}"
+	cd "$_ORIG_PWD"
+	rm -rf "$_IMAGE_PATH"
+}
+
 # Check for and run the imager script.
 echo "Flashing mod at ${_IMAGE_PATH}"
-trap "cd '$PWD'" EXIT 
+trap _clean_up EXIT
 cd "$_IMAGE_PATH"
 
 if ! test -f './imager.sh' ; then
