@@ -156,6 +156,30 @@ begin_squashfs_edit() {
 	echo "${_WRAPPER}/union"
 }
 
+# begin_squashfs_image_edit
+# Mounts a local squashfs image file to be edited and then written to disk with
+# end_squashfs_edit.
+#
+# Parameters:
+#   $1: The path of the local squashfs image.
+#   $2: The name (NOT number) of the MTD partition to write the image to.
+# Returns: Prints the path to the editable mount.
+begin_squashfs_image_edit() {
+	_WRAPPER="$(mktemp -d)"
+	log "Setting up squashfs image union at ${_WRAPPER}"
+	mkdir "${_WRAPPER}/base" "${_WRAPPER}/overlay" "${_WRAPPER}/union"
+
+	if ! mount -o loop -t squashfs "$1" "${_WRAPPER}/base" ; then
+		log "Could not mount local squashfs image ${1}"
+		return 1
+	fi
+
+	unionfs -o cow "${_WRAPPER}/overlay=RW:${_WRAPPER}/base=RO" "${_WRAPPER}/union"
+
+	echo "$2" > "${_WRAPPER}/mtdpart"
+	echo "${_WRAPPER}/union"
+}
+
 # end_squashfs_edit
 # Reflashes a squashfs from a previously-edited partition and cleans up the
 # mount points.
