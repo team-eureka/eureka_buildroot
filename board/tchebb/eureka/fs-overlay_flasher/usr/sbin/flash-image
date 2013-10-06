@@ -27,7 +27,7 @@ dry_run() {
 # Parameters:
 #   $1: A string describing the error encountered.
 fatal() {
-	echo "FAILURE in ${IMAGE_PATH}/imager.sh: ${1}" | tee -a /etc/motd >&3
+	echo "FAILURE in ${_IMAGE_PATH}/imager.sh: ${1}" | tee -a /etc/motd >&3
 	exit 1;
 }
 
@@ -178,30 +178,30 @@ end_squashfs_edit() {
 
 # Put the mod in a temp directory.
 if test -f "$1" -a "${1%.zip}" != "$1" ; then
-	IMAGE_PATH="$(mktemp -d)"
-	echo "Extracting ${1} (zip) to ${IMAGE_PATH}"
+	_IMAGE_PATH="$(mktemp -d)"
+	echo "Extracting ${1} (zip) to ${_IMAGE_PATH}"
 
-	unzip -d "$IMAGE_PATH" "$1"
+	unzip -d "$_IMAGE_PATH" "$1"
 elif test -f "$1" -a "${1%.tar*}" != "$1" ; then
-	IMAGE_PATH="$(mktemp -d)"
-	echo "Extracting ${1} (tar) to ${IMAGE_PATH}"
+	_IMAGE_PATH="$(mktemp -d)"
+	echo "Extracting ${1} (tar) to ${_IMAGE_PATH}"
 
-	tar -xv -C "$IMAGE_PATH" -f "$1"
+	tar -xv -C "$_IMAGE_PATH" -f "$1"
 elif test -d "$1" ; then
-	IMAGE_PATH="$(mktemp -u)"
-	echo "Copying ${1} to ${IMAGE_PATH}"
+	_IMAGE_PATH="$(mktemp -u)"
+	echo "Copying ${1} to ${_IMAGE_PATH}"
 
-	cp -r "$1" "$IMAGE_PATH"
-	chmod 755 "$IMAGE_PATH"
+	cp -r "$1" "$_IMAGE_PATH"
+	chmod 755 "$_IMAGE_PATH"
 else
 	echo "${1} is not of a recognized mod format"
 	exit 0
 fi
 
 # Check for and run the imager script.
-echo "Flashing mod at ${IMAGE_PATH}"
+echo "Flashing mod at ${_IMAGE_PATH}"
 trap "cd '$PWD'" EXIT 
-cd "$IMAGE_PATH"
+cd "$_IMAGE_PATH"
 
 if ! test -f './imager.sh' ; then
 	echo "ERROR: $(pwd)/imager.sh does not exist"
