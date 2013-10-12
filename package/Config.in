@@ -452,6 +452,8 @@ endmenu
 menu "Graphics"
 source "package/atk/Config.in"
 source "package/cairo/Config.in"
+source "package/etna_viv/Config.in"
+source "package/mesa3d-etna_viv/Config.in"
 source "package/fltk/Config.in"
 source "package/fontconfig/Config.in"
 source "package/freetype/Config.in"
