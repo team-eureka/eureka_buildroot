@@ -35,6 +35,12 @@ fi
 log "Clearing OTAs"
 log_cmd flash-image '/usr/share/flasher/remove-ota'
 
+# If the device doesn't exist, give it 5 seconds to be detected.
+if ! test -b "$IMAGES_DEVICE" ; then
+	log "${IMAGES_DEVICE} doesn't exist, waiting 5 seconds before retrying"
+	sleep 5
+fi
+
 # Mount the device to a temporary directory.
 IMAGES_DIR="$(mktemp -d)"
 log "Mounting ${IMAGES_DEVICE} to ${IMAGES_DIR}"
