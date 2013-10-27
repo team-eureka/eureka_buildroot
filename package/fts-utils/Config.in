@@ -1,0 +1,6 @@
+config BR2_PACKAGE_FTS_UTILS
+	bool "fts-utils"
+	help
+	  A set of utilities for reading and writing the Google TV's Flash Transaction Storage partition
+
+	  https://github.com/tchebb/fts-utils
