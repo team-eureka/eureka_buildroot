@@ -96,9 +96,9 @@ else
 		log "Found eureka_images directory, flashing all images inside"
 		if test -f "${IMAGES_DIR}/ignore_errors" ; then
 			log "ignore_errors file is present, ignoring errors"
-			export IGNORE_ERRORS=1
+			IGNORE_ERRORS=1
 		fi
-		log_cmd flash-image '/usr/share/flasher/iterate-images' "${IMAGES_DIR}/eureka_images"
+		log_cmd flash-image '/usr/share/flasher/iterate-images' "${IMAGES_DIR}/eureka_images" "$IGNORE_ERRORS"
 	else
 		fatal "No images found on ${IMAGES_DEVICE}"
 	fi
