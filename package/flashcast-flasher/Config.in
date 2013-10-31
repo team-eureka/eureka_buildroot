@@ -1,0 +1,7 @@
+config BR2_PACKAGE_FLASHCAST_FLASHER
+	bool "flashcast-flasher"
+	select BR2_PACKAGE_SET_LED
+	help
+	  The set of shell scripts which power FlashCast's mod framework
+
+	  https://github.com/tchebb/flashcast-flasher
