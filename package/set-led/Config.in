@@ -1,4 +1,4 @@
 config BR2_PACKAGE_SET_LED
-	bool "set_led"
+	bool "set-led"
 	help
 	  Sets the led color on the eureka dongle.
