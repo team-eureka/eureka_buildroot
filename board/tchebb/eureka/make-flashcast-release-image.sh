@@ -14,7 +14,7 @@ rm -f init_partitions.sqfs
 # Create a new squashfs image with an init_partitions flag file.
 echo "Creating a squashfs image with the init_partitions flag file"
 touch init_partitions
-mksquashfs init_partitions init_partitions.sqfs -all-root -no-progress
+mksquashfs init_partitions init_partitions.sqfs -all-root -nopad -no-progress
 rm init_partitions
 
 MBR_SIZE="$((0x1000))"
