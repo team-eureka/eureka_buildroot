@@ -32,7 +32,7 @@ start() {
 		/usr/bin/dropbearkey -t dss -f "${DATA}/flashcast/dropbear/dropbear_dss_host_key" > /dev/null 2>&1
 	fi
 	umask 077
-	start-stop-daemon -S -q -p /var/run/dropbear.pid --exec /usr/sbin/dropbear -- -r "${DATA}/flashcast/dropbear/dropbear_rsa_host_key" -d "${DATA}/flashcast/dropbear/dropbear_dss_host_key"
+	start-stop-daemon -S -q -p /var/run/dropbear.pid --exec /usr/sbin/dropbear -- -r "${DATA}/flashcast/dropbear/dropbear_rsa_host_key" -d "${DATA}/flashcast/dropbear/dropbear_dss_host_key" -b /etc/issue
 	umount "$DATA"
 	rmdir "$DATA"
 	echo "OK"
