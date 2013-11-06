@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-FLASHCAST_FLASHER_VERSION = master
+FLASHCAST_FLASHER_VERSION = v1.1
 FLASHCAST_FLASHER_SITE = https://github.com/tchebb/flashcast-flasher.git
 FLASHCAST_FLASHER_SITE_METHOD = git
 
