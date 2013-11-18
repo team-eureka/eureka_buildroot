@@ -25,13 +25,20 @@ case "$1" in
 	if test -s "$WPA_CONF" ; then
 		echo "WiFi configuration found, connecting..."
 		if \
-			wpa_supplicant -B -D 'nl80211' -i "$CLIENT_INTERFACE" -c "$WPA_CONF" &&
+			wpa_supplicant -B -D 'nl80211' -i "$CLIENT_INTERFACE" -c "$WPA_CONF" -P /var/run/wpa_supplicant.pid &&
 			udhcpc -i "$CLIENT_INTERFACE" -n -x "hostname:$(cat /etc/hostname)"
 		then
 			echo "Connected as client!"
 			CONNECTION_MODE='client'
 		else
 			echo "Connecting as client failed"
+
+			# Shut down wpa_supplicant so the interface can be brought up in AP mode.
+			WPA_SUPPLICANT_PID="$(cat /var/run/wpa_supplicant.pid)"
+			if test -n "$WPA_SUPPLICANT_PID" ; then
+				kill "$WPA_SUPPLICANT_PID"
+				wait "$WPA_SUPPLICANT_PID"
+			fi
 		fi
 	fi
 	rm -f "$WPA_CONF"
