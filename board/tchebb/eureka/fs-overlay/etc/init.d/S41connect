@@ -26,7 +26,7 @@ case "$1" in
 		echo "WiFi configuration found, connecting..."
 		if \
 			wpa_supplicant -B -D 'nl80211' -i "$CLIENT_INTERFACE" -c "$WPA_CONF" -P /var/run/wpa_supplicant.pid &&
-			udhcpc -i "$CLIENT_INTERFACE" -n -x "hostname:$(cat /etc/hostname)"
+			udhcpc -i "$CLIENT_INTERFACE" -n -x "hostname:$(cat /etc/hostname)" -t 10
 		then
 			echo "Connected as client!"
 			CONNECTION_MODE='client'
