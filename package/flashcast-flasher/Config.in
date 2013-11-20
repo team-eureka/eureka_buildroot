@@ -5,4 +5,4 @@ config BR2_PACKAGE_FLASHCAST_FLASHER
 	help
 	  The set of shell scripts which power FlashCast's mod framework
 
-	  https://github.com/tchebb/flashcast-flasher
+	  https://github.com/team-eureka/flashcast-flasher
