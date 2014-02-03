@@ -26,7 +26,7 @@ SQFS_START="$((MBR_SIZE + BOOTIMG_SIZE))"
 rm -f eureka_release.bin
 
 echo "Allocating space for release image"
-fallocate -l "$((SQFS_START / 1024))KiB" eureka_release.bin
+dd bs=1K seek="$((SQFS_START / 1024))" count=0 of=eureka_release.bin
 
 echo "Appending squashfs image to release image"
 cat init_partitions.sqfs >> eureka_release.bin
