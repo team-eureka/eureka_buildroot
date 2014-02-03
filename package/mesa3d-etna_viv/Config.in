@@ -10,6 +10,22 @@ config BR2_PACKAGE_MESA3D_ETNA_VIV
 if BR2_PACKAGE_MESA3D_ETNA_VIV
 
 config BR2_PACKAGE_MESA3D_ETNA_VIV_DEBUG
-        bool "Enable debug logging and assertions"
+	bool "Enable debug logging and assertions"
+	default n
+
+config BR2_PACKAGE_MESA3D_ETNA_VIV_EGL
+	bool "Build the EGL library"
+	select BR2_PACKAGE_HAS_OPENGL_EGL
+	default y
+
+config BR2_PACKAGE_MESA3D_ETNA_VIV_GLES
+	bool "Build the OpenGL ES 1.0/2.0 libraries"
+	select BR2_PACKAGE_HAS_OPENGL_ES
+	default y
+
+config BR2_PACKAGE_MESA3D_ETNA_VIV_VG
+	bool "Build the OpenVG library"
+	select BR2_PACKAGE_HAS_OPENVG
+	default n
 
 endif
