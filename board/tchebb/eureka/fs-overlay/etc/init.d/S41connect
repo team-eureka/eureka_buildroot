@@ -16,7 +16,7 @@ case "$1" in
 	if mount /dev/mtdblock5 "$DATA" ; then
 		if test -f "${DATA}/wifi/wpa_supplicant.conf" ; then
 			WPA_CONF="$(mktemp -u)"
-			tail -n '+4' "${DATA}/wifi/wpa_supplicant.conf" >"$WPA_CONF"
+			grep -v 'ctrl_interface=' "${DATA}/wifi/wpa_supplicant.conf" >"$WPA_CONF"
 		fi
 		umount "$DATA"
 	fi
