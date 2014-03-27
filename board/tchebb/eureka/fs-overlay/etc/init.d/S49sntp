@@ -12,7 +12,7 @@ fi
 case "$1" in
   start)
 	echo "Getting initial time via sntp..."
-	sntp -s $NTPSERVERS
+	sntp -s -t 3 $NTPSERVERS
 	;;
   stop)
 	;;
