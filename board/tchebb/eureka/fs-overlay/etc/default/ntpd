@@ -1,0 +1,2 @@
+# NTP Servers to use for ntpdate
+NTPSERVERS="pool.ntp.org"

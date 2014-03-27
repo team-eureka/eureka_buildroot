@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Set the time roughly using sntpd
+#
+
+# Read config file if it is present.
+if [ -r /etc/default/ntpd ]
+then
+	. /etc/default/ntpd
+fi
+
+case "$1" in
+  start)
+	echo "Getting initial time via sntp..."
+	sntp -s $NTPSERVERS
+	;;
+  stop)
+	;;
+  *)
+	echo "Usage: $0 {start|stop}" >&2
+	exit 1
+esac
+
+exit $?
