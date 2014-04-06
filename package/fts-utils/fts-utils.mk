@@ -5,7 +5,7 @@
 ################################################################################
 
 FTS_UTILS_VERSION = v0.1
-FTS_UTILS_SITE = https://github.com/tchebb/fts-utils.git
+FTS_UTILS_SITE = https://github.com/team-eureka/fts-utils.git
 FTS_UTILS_SITE_METHOD = git
 
 define FTS_UTILS_BUILD_CMDS
