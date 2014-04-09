@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-FTS_UTILS_VERSION = v0.1
+FTS_UTILS_VERSION = v1
 FTS_UTILS_SITE = https://github.com/team-eureka/fts-utils.git
 FTS_UTILS_SITE_METHOD = git
 
