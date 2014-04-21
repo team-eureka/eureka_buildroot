@@ -26,6 +26,7 @@ endef
 define BERLIN_BLOBS_INSTALL_TARGET_CMDS
 	cd $(@D)/system/bin/ ; cp --parents $(BERLIN_BLOBS_BINARIES) $(TARGET_DIR)/bin/
 	cd $(@D)/system/lib/ ; cp --parents $(BERLIN_BLOBS_LIBRARIES) $(TARGET_DIR)/usr/lib/
+	$(INSTALL) -D -m 0755 package/berlin-blobs/S30PE_Single_CPU $(TARGET_DIR)/etc/init.d
 endef
 
 $(eval $(generic-package))
