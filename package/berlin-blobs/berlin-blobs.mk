@@ -4,8 +4,8 @@
 #
 ################################################################################
 
-BERLIN_BLOBS_VERSION = 15250
-BERLIN_BLOBS_CHECKSUM = c969d0c31d3154c9333cc4d6837ffd6696570173
+BERLIN_BLOBS_VERSION = 16664
+BERLIN_BLOBS_CHECKSUM = 8a0aac362aa1521e1260cb24e69ce0f8bfdbdbff
 BERLIN_BLOBS_SOURCE = ota.$(BERLIN_BLOBS_VERSION).stable-channel.eureka-b3.$(BERLIN_BLOBS_CHECKSUM).zip
 BERLIN_BLOBS_INSTALL_STAGING = YES
 BERLIN_BLOBS_SITE = http://cache.pack.google.com/edgedl/googletv-eureka/stable-channel
