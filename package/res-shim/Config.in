@@ -1,0 +1,8 @@
+config BR2_PACKAGE_RES_SHIM
+	bool "res-shim"
+	depends on BR2_PACKAGE_BERLIN_BLOBS
+	depends on BR2_PACKAGE_DIRECTFB
+	help
+	  Sets the Chromecast's HDMI resolution for DirectFB.
+
+	  https://github.com/team-eureka/res-shim
