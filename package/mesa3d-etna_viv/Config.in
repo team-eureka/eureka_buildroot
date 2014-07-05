@@ -15,17 +15,24 @@ config BR2_PACKAGE_MESA3D_ETNA_VIV_DEBUG
 
 config BR2_PACKAGE_MESA3D_ETNA_VIV_EGL
 	bool "Build the EGL library"
-	select BR2_PACKAGE_HAS_OPENGL_EGL
+	select BR2_PACKAGE_HAS_LIBEGL
 	default y
 
 config BR2_PACKAGE_MESA3D_ETNA_VIV_GLES
 	bool "Build the OpenGL ES 1.0/2.0 libraries"
-	select BR2_PACKAGE_HAS_OPENGL_ES
+	select BR2_PACKAGE_HAS_LIBGLES
 	default y
 
 config BR2_PACKAGE_MESA3D_ETNA_VIV_VG
 	bool "Build the OpenVG library"
 	select BR2_PACKAGE_HAS_OPENVG
 	default n
+
+config BR2_PACKAGE_PROVIDES_LIBEGL
+	default "mesa3d-etna_viv" if BR2_PACKAGE_MESA3D_ETNA_VIV_EGL
+
+config BR2_PACKAGE_PROVIDES_LIBGLES
+	default "mesa3d-etna_viv" if BR2_PACKAGE_MESA3D_ETNA_VIV_GLES
+
 
 endif
