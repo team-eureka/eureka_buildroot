@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-FLASHCAST_FLASHER_VERSION = v1.2
+FLASHCAST_FLASHER_VERSION = v1.3
 FLASHCAST_FLASHER_SITE = https://github.com/team-eureka/flashcast-flasher.git
 FLASHCAST_FLASHER_SITE_METHOD = git
 FLASHCAST_FLASHER_LICENSE = GPLv3+
