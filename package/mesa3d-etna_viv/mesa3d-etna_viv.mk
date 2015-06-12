@@ -17,37 +17,37 @@ MESA3D_ETNA_VIV_CONF_ENV := \
 	PYTHON2="$(HOST_DIR)/usr/bin/python2" \
 	ETNA_LIBS="$(STAGING_DIR)/usr/lib/libetnaviv.a"
 
-MESA3D_ETNA_VIV_CONF_OPT = \
+MESA3D_ETNA_VIV_CONF_OPTS = \
 	--disable-glx \
 	--enable-dri --with-dri-drivers= \
 	--with-gallium-drivers=swrast,etna
 
 ifeq ($(BR2_PREFER_STATIC_LIB),y)
-MESA3D_ETNA_VIV_CONF_OPT += --enable-static --disable-shared
+MESA3D_ETNA_VIV_CONF_OPTS += --enable-static --disable-shared
 else
-MESA3D_ETNA_VIV_CONF_OPT += --disable-static --enable-shared
+MESA3D_ETNA_VIV_CONF_OPTS += --disable-static --enable-shared
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_ETNA_VIV_DEBUG),y)
-MESA3D_ETNA_VIV_CONF_OPT += --enable-debug
+MESA3D_ETNA_VIV_CONF_OPTS += --enable-debug
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_ETNA_VIV_EGL),y)
-MESA3D_ETNA_VIV_CONF_OPT += --enable-egl --with-egl-platforms=fbdev --enable-gallium-egl
+MESA3D_ETNA_VIV_CONF_OPTS += --enable-egl --with-egl-platforms=fbdev --enable-gallium-egl
 else
-MESA3D_ETNA_VIV_CONF_OPT += --disable-egl
+MESA3D_ETNA_VIV_CONF_OPTS += --disable-egl
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_ETNA_VIV_GLES),y)
-MESA3D_ETNA_VIV_CONF_OPT += --enable-gles1 --enable-gles2
+MESA3D_ETNA_VIV_CONF_OPTS += --enable-gles1 --enable-gles2
 else
-MESA3D_ETNA_VIV_CONF_OPT += --disable-gles1 --disable-gles2
+MESA3D_ETNA_VIV_CONF_OPTS += --disable-gles1 --disable-gles2
 endif
 
 ifeq ($(BR2_PACKAGE_MESA3D_ETNA_VIV_VG),y)
-MESA3D_ETNA_VIV_CONF_OPT += --enable-openvg
+MESA3D_ETNA_VIV_CONF_OPTS += --enable-openvg
 else
-MESA3D_ETNA_VIV_CONF_OPT += --disable-openvg
+MESA3D_ETNA_VIV_CONF_OPTS += --disable-openvg
 endif
 
 MESA3D_ETNA_VIV_DEPENDENCIES = \
