@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-SET_LED_VERSION = v1
+SET_LED_VERSION = v2
 SET_LED_SITE = https://github.com/team-eureka/set-led.git
 SET_LED_SITE_METHOD = git
 
