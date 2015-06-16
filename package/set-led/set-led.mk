@@ -9,7 +9,7 @@ SET_LED_SITE = https://github.com/team-eureka/set-led.git
 SET_LED_SITE_METHOD = git
 
 define SET_LED_BUILD_CMDS
-	$(MAKE) CC="$(TARGET_CC)" LD="$(TARGET_LD)" -C $(@D) set-led
+	$(MAKE) CC="$(TARGET_CC)" LD="$(TARGET_LD)" -C $(@D)
 endef
 
 define SET_LED_INSTALL_TARGET_CMDS
