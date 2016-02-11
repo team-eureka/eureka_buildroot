@@ -1,0 +1,18 @@
+menu "Applications"
+	source "$BR2_EXTERNAL/package/flashcast-flasher/Config.in"
+endmenu
+
+menu "3D support"
+	source "$BR2_EXTERNAL/package/etna_viv/Config.in"
+	source "$BR2_EXTERNAL/package/mesa3d-etna_viv/Config.in"
+endmenu
+
+menu "Hardware support"
+	source "$BR2_EXTERNAL/package/set-led/Config.in"
+	source "$BR2_EXTERNAL/package/fts-utils/Config.in"
+endmenu
+
+menu "Marvell library compatibility"
+	source "$BR2_EXTERNAL/package/berlin-blobs/Config.in"
+	source "$BR2_EXTERNAL/package/res-shim/Config.in"
+endmenu
