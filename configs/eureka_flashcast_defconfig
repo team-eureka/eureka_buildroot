@@ -10,6 +10,7 @@ BR2_TARGET_GENERIC_HOSTNAME="flashcast"
 BR2_TARGET_GENERIC_ISSUE="Welcome to FlashCast!"
 BR2_ROOTFS_DEVICE_CREATION_DYNAMIC_MDEV=y
 BR2_TARGET_GENERIC_ROOT_PASSWD="letmein"
+BR2_SYSTEM_BIN_SH_BASH=y
 BR2_ROOTFS_OVERLAY="$(BR2_EXTERNAL)/board/tchebb/eureka/fs-overlay/ $(BR2_EXTERNAL)/board/tchebb/eureka/fs-overlay_flashcast/"
 BR2_ROOTFS_POST_BUILD_SCRIPT="$(BR2_EXTERNAL)/board/tchebb/eureka/update-flashcast-issue.sh $(BR2_EXTERNAL)/board/tchebb/eureka/set-bash-as-root-shell.sh"
 BR2_ROOTFS_POST_IMAGE_SCRIPT="$(BR2_EXTERNAL)/board/tchebb/eureka/make-bootimg.sh $(BR2_EXTERNAL)/board/tchebb/eureka/make-flashcast-release-image.sh"
@@ -43,7 +44,6 @@ BR2_PACKAGE_NTP=y
 BR2_PACKAGE_NTP_SNTP=y
 # BR2_PACKAGE_NTP_NTPD is not set
 BR2_PACKAGE_WPA_SUPPLICANT=y
-BR2_PACKAGE_BASH=y
 BR2_PACKAGE_FILE=y
 BR2_PACKAGE_KMOD=y
 BR2_TARGET_ROOTFS_CPIO=y
