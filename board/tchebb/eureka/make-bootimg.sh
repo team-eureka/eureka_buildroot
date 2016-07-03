@@ -10,11 +10,14 @@ IMAGES_DIR="$1"
 
 write_bootimg() {
 	if test -f "${IMAGES_DIR}/rootfs.cpio.gz" ; then
-		cc-make-bootimg "$1" "$2" "${IMAGES_DIR}/zImage" "${IMAGES_DIR}/rootfs.cpio.gz"
+		cc-make-bootimg "$1" "$2" "$3" "${IMAGES_DIR}/rootfs.cpio.gz"
 	else
-		cc-make-bootimg "$1" "$2" "${IMAGES_DIR}/zImage"
+		cc-make-bootimg "$1" "$2" "$3"
 	fi
 }
 
-write_bootimg usb "${IMAGES_DIR}/eureka_boot.img"
-write_bootimg nand "${IMAGES_DIR}/eureka_recovery.img"
+ZIMAGE_PATH="$(ls -q1t "${IMAGES_DIR}/zImage"* | head -n 1)"
+echo "Selected zImage $ZIMAGE_PATH"
+
+write_bootimg usb "${IMAGES_DIR}/eureka_boot.img" "$ZIMAGE_PATH"
+write_bootimg nand "${IMAGES_DIR}/eureka_recovery.img" "$ZIMAGE_PATH"
