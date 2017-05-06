@@ -1,7 +1,7 @@
 This repository contains an external tree for Buildroot that adds a board
 definition, defconfigs, and various packages needed to support the 1st-
 generation Google Chromecast streaming player, codenamed "eureka." This tree
-has been tested with Buildroot 2016.11.1, but it is likely to also work with
+has been tested with Buildroot 2017.02.2, but it is likely to also work with
 later versions.
 
 Setup
@@ -12,8 +12,8 @@ on a stock Buildroot tree. That is no longer the case and will likely not work
 if you try it. Instead, we now use Buildroot's `BR2_EXTERNAL` mechanism to keep
 the Chromecast's configuration in a directory separate from Buildroot's source.
 
-NOTE: Buildroot's `BR2_EXTERNAL` mechanism has slightly changed in 2016.11,
-to be able to support multiple br2-external trees.
+NOTE: Buildroot's `BR2_EXTERNAL` mechanism changed slightly in 2016.11, and this
+repository will not work with older versions.
 
 To set up a build environment, clone this repository and Buildroot into separate
 directories. Then, in your Buildroot directory, run the following command:
