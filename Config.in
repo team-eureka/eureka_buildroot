@@ -2,17 +2,7 @@ menu "Applications"
 	source "$BR2_EXTERNAL_EUREKA_PATH/package/flashcast-flasher/Config.in"
 endmenu
 
-menu "3D support"
-	source "$BR2_EXTERNAL_EUREKA_PATH/package/etna_viv/Config.in"
-	source "$BR2_EXTERNAL_EUREKA_PATH/package/mesa3d-etna_viv/Config.in"
-endmenu
-
 menu "Hardware support"
 	source "$BR2_EXTERNAL_EUREKA_PATH/package/set-led/Config.in"
 	source "$BR2_EXTERNAL_EUREKA_PATH/package/fts-utils/Config.in"
-endmenu
-
-menu "Marvell library compatibility"
-	source "$BR2_EXTERNAL_EUREKA_PATH/package/berlin-blobs/Config.in"
-	source "$BR2_EXTERNAL_EUREKA_PATH/package/res-shim/Config.in"
 endmenu

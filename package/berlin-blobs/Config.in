@@ -1,5 +1,0 @@
-config BR2_PACKAGE_BERLIN_BLOBS
-	bool "berlin-blobs"
-	select BR2_PACKAGE_LIBEXIF
-	help
-	  Binary blobs for Marvell Berlin SoCs (taken from the Google Chromecast)
